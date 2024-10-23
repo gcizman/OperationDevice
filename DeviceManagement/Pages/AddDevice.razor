@@ -1,0 +1,50 @@
+﻿@page "/add-device"
+@inject NavigationManager Navigation
+@using DeviceManagement.Models
+@using DeviceManagement.Services
+@inject DevicesService DeviceService
+@inject OperationService OperationService
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3 style="text-align: center;">Add New Device</h3>
+<div class="card" style="margin: 0 auto; max-width: 195%;">
+    <div class="card-body" style="padding: 40px;">
+        <EditForm Model="newDevice" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group" style="text-align: center;">
+                <label for="name">Name</label>
+                <InputText id="name" class="form-control" @bind-Value="newDevice.Name" style="width: 75%;" />
+            </div>
+            <div class="form-group" style="text-align: center;">
+                <label for="deviceType">Device Type</label>
+                <InputSelect id="deviceType" class="form-control" @bind-Value="newDevice.DeviceType" style="width: 75%;">
+                    <option value="">Select</option>
+                    <option value="BarcodeScanner">Barcode Scanner</option>
+                    <option value="Printer">Printer</option>
+                    <option value="Camera">Camera</option>
+                    <option value="SocketTray">Socket Tray</option>
+                </InputSelect>
+            </div>
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">Add Device</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Device newDevice = new Device();
+    private int operationId = 0;
+
+    private void HandleValidSubmit()
+    {
+        
+        DeviceService.AddDevice(newDevice);
+        // link device to the operation list
+        OperationService.AddDeviceToOperation(operationId, newDevice);
+        
+
+        Navigation.NavigateTo("/operations");
+    }
+}

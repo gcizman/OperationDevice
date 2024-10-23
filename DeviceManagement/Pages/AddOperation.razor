@@ -1,0 +1,37 @@
+﻿@page "/add-operation"
+@using DeviceManagement.Services
+@using DeviceManagement.Models
+@inject OperationService OperationService
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3 style="text-align:center;">Add New Operation</h3>
+<div class="card" style="margin: 0 auto; max-width: 195%;">
+    <div class="card-body" style="padding: 40px;">
+        <EditForm Model="newOperation" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" class="form-control" @bind-Value="newOperation.Name" style="width: 75%;" />
+            </div>
+            <div class="form-group">
+                <label for="order">Order</label>
+                <InputNumber id="order" class="form-control" @bind-Value="newOperation.OrderInWhichToPerform" style="width: 75%;" />
+            </div>
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">Add Operation</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Operation newOperation = new Operation();
+
+    private void HandleValidSubmit()
+    {
+        OperationService.AddOperation(newOperation);
+        Navigation.NavigateTo("/operations");
+    }
+}

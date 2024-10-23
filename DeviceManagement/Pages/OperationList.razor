@@ -1,0 +1,56 @@
+﻿@page "/operations"
+@using DeviceManagement.Services
+@using DeviceManagement.Models
+@inject OperationService OperationService
+@inject DevicesService DeviceService
+@inject NavigationManager Navigation
+
+<h3 style="text-align: center;">Operations</h3>
+<div class="card" style="margin: 0 auto; max-width: 195%;">
+    <div class="card-body" style="padding: 80px;">
+        <table class="table" style="width: 100%; border-collapse: collapse; table-layout: auto;">
+            <thead style="background-color: lightgrey;">
+                <tr>
+                    <th style="padding: 8px; border: 1px solid grey;">Name</th>
+                    <th style="padding: 8px; border: 1px solid grey;">Order</th>
+                    <th style="padding: 8px; border: 1px solid grey;">Device</th>
+                    <th style="padding: 8px; border: 1px solid grey;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var operation in operations)
+                {
+                    <tr style="border-bottom: 1px solid grey;">
+                        <td style="padding: 8px; border: 1px solid grey; white-space: nowrap;">@operation.Name</td>
+                        <td style="padding: 8px; border: 1px solid grey; white-space: nowrap;">@operation.OrderInWhichToPerform</td>
+                        <td style="padding: 8px; border: 1px solid grey; white-space: nowrap;">@operation.Device?.Name</td>
+                        <td style="padding: 8px; border: 1px solid grey; white-space: nowrap;">
+                            <button class="btn btn-danger" @onclick="() => RemoveOperation(operation.OperationID)">Remove</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-primary" @onclick="NavigationToAddOperation">Add Operation</button>
+    </div>
+</div>
+
+@code {
+    private List<Operation> operations = new List<Operation>();
+
+    protected override void OnInitialized()
+    {
+        operations = OperationService.GetOperations();
+    }
+
+    private void RemoveOperation(int operationId)
+    {
+        OperationService.RemoveOperation(operationId);
+        operations = OperationService.GetOperations(); // Refresh list
+    }
+
+    private void NavigationToAddOperation()
+    {
+        Navigation.NavigateTo("/add-operation");
+    }
+}
